@@ -74,11 +74,7 @@ namespace WilmingtonVetClinic
                     break;
                 }
 
-            }
-
-
-            // Print admin fee
-            
+            }            
 
             // Print terminate message
             Console.WriteLine("\nPress Enter twice to terminate...");
