@@ -17,48 +17,48 @@ using System.CodeDom;
 
 namespace WilmingtonVetClinic
 {
-    internal class Program
+    class Pet
     {
-        class Pet
+        // Lists for pet parameters
+        private List<string> _petNames = new List<string>();
+        private List<char> _petTypes = new List<char>();
+        private List<int> _petAges = new List<int>();
+
+        // Constructor method to add parameters to lists
+        public void AddPet(string petName, char petType, int petAge)
         {
-            // Lists for pet parameters
-            private List<string> _petNames = new List<string>();
-            private List<char> _petTypes = new List<char>();
-            private List<int> _petAges = new List<int>();
-
-            // Constructor method to add parameters to lists
-            public void AddPet(string petName, char petType, int petAge)
-            {
-                _petNames.Add(petName);
-                _petTypes.Add(petType);
-                _petAges.Add(petAge);
-            }
-
-            // Getters (read-only)
-            public List<string> PetNames
-            {
-                get { return new List<string>(_petNames); }
-            }
-
-            public List<char> PetTypes
-            {
-                get { return new List<char>(_petTypes); }
-            }
-
-            public List<int> PetAges
-            {
-                get { return new List<int>(_petAges); }
-            }
-
-            // Keeping count (an object must be responsible for itself)
-            public int Count
-            {
-                get { return _petNames.Count; }
-            }
-
-            // 1. Method to get pet info?
+            _petNames.Add(petName);
+            _petTypes.Add(petType);
+            _petAges.Add(petAge);
         }
 
+        // Getters (read-only)
+        public List<string> PetNames
+        {
+            get { return new List<string>(_petNames); }
+        }
+
+        public List<char> PetTypes
+        {
+            get { return new List<char>(_petTypes); }
+        }
+
+        public List<int> PetAges
+        {
+            get { return new List<int>(_petAges); }
+        }
+
+        // Keeping count (an object must be responsible for itself)
+        public int Count
+        {
+            get { return _petNames.Count; }
+        }
+
+        // 1. Method to get pet info?
+    }
+
+    internal class Program
+    {
         static void Main(string[] args)
         {
             // Print welcome message
