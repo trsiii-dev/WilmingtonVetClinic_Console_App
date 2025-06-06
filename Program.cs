@@ -1,14 +1,64 @@
-﻿using System;
+﻿/*
+
+ To-Do:
+    1. Finish pet class (see pet class)
+    2. Need to use Pet class to add pet parameters (see first while loop)
+    3. Check petCodes variable in second while loop
+
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
+using System.CodeDom;
 
 namespace WilmingtonVetClinic
 {
     internal class Program
     {
+        class Pet
+        {
+            // Lists for pet parameters
+            private List<string> _petNames = new List<string>();
+            private List<char> _petTypes = new List<char>();
+            private List<int> _petAges = new List<int>();
+
+            // Constructor method to add parameters to lists
+            public void AddPet(string petName, char petType, int petAge)
+            {
+                _petNames.Add(petName);
+                _petTypes.Add(petType);
+                _petAges.Add(petAge);
+            }
+
+            // Getters (read-only)
+            public List<string> PetNames
+            {
+                get { return new List<string>(_petNames); }
+            }
+
+            public List<char> PetTypes
+            {
+                get { return new List<char>(_petTypes); }
+            }
+
+            public List<int> PetAges
+            {
+                get { return new List<int>(_petAges); }
+            }
+
+            // Keeping count (an object must be responsible for itself)
+            public int Count
+            {
+                get { return _petNames.Count; }
+            }
+
+            // 1. Method to get pet info?
+        }
+
         static void Main(string[] args)
         {
             // Print welcome message
@@ -69,23 +119,13 @@ namespace WilmingtonVetClinic
                 {'R', "Reptile"}
             };
 
-            // List for pet names
-            List<string> petNames = new List<string>();
-
-            // List for pet type codes
-            List<char> petTypes = new List<char>();
-
-            // List for pet ages
-            List<int> petAges = new List<int>();
-
-
             // Prompt for pet names
             int p = 0;
             while (true)
             {
                 Console.Write("Enter your pet's name: ");
                 string nameInput = Console.ReadLine();
-                petNames.Add(nameInput);
+                // 2. need to use Pet class to add pet name
 
                 // Show pet codes
                 Console.WriteLine("The following pet type codes are available: ");
@@ -97,12 +137,12 @@ namespace WilmingtonVetClinic
                 // Prompt for pet code
                 Console.Write($"Enter {nameInput}'s pet type code: ");
                 char codeInput = Convert.ToChar(Console.ReadLine().ToUpper());
-                petTypes.Add(codeInput);
+                // 2. need to use Pet class to add pet code
 
                 // Prompt for pet age
                 Console.Write($"Enter {nameInput}'s age: ");
                 int ageInput = Convert.ToInt32(Console.ReadLine());
-                petAges.Add(ageInput);
+                // 2. need to use Pet class to add pet age
 
                 // Insert break for readability
                 Console.WriteLine();
@@ -123,7 +163,7 @@ namespace WilmingtonVetClinic
             {
                 // Prompt for pet code to display pets of that type
                 Console.WriteLine("Enter pet type to see listings, or 'Q' to Quit");
-                foreach(KeyValuePair<char, string> key in petCodes)
+                foreach(KeyValuePair<char, string> key in /*3. petCodes variable*/)
                 {
                     Console.WriteLine("\t" + key.Key + "\t" + key.Value);
                 }
