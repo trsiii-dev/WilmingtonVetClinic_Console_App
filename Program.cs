@@ -1,60 +1,65 @@
-﻿/*
-
- To-Do:
-    1. Finish pet class (see pet class)
-    2. Need to use Pet class to add pet parameters (see first while loop)
-    3. Check petCodes variable in second while loop
-
- */
-
-using System;
+﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using System.Globalization;
-using System.CodeDom;
+using System.Xml.Linq;
 
 namespace WilmingtonVetClinic
 {
+
     class Pet
     {
-        // Lists for pet parameters
-        private List<string> _petNames = new List<string>();
-        private List<char> _petTypes = new List<char>();
-        private List<int> _petAges = new List<int>();
+        // Private variables //
+        private string _name;
+        private char _petType;
+        private int _age;
 
-        // Constructor method to add parameters to lists
-        public void AddPet(string petName, char petType, int petAge)
+        // Dictionary for pet codes - notice static keyword - this allows us to call the dictionary from the Main class without having to instantiate a Pet object first //
+        public static Dictionary<char, string> PetCodes = new Dictionary<char, string>
         {
-            _petNames.Add(petName);
-            _petTypes.Add(petType);
-            _petAges.Add(petAge);
+            {'B', "Bird"},
+            {'C', "Cat"},
+            {'D', "Dog"},
+            {'R', "Reptile"}
+        };
+
+        public string Name // property
+        {
+            get { return _name; } // get method
+            set { _name = value; } // set method
         }
 
-        // Getters (read-only)
-        public List<string> PetNames
+        public char PetType // property
         {
-            get { return new List<string>(_petNames); }
+            get { return _petType; } // get method
+            set { _petType = value; } // set method
         }
 
-        public List<char> PetTypes
+        public int Age // property
         {
-            get { return new List<char>(_petTypes); }
+            get { return _age; } // get method
+            set { _age = value; } // set method
         }
 
-        public List<int> PetAges
+        // Void return type means we aren't returning anything. pets and petTypeCode are List<Pets> and char input parameters respectively //
+        public static void PrintNamesList(List<Pet> pets, char petTypeCode)
         {
-            get { return new List<int>(_petAges); }
+            foreach (Pet pet in pets)
+            {
+                // Loop through each Pet object in List<Pet>...check if pet type code in input parameter value, if so, print the name and age of the pet from the Pet object in current iteration of loop //
+                if (pet.PetType == petTypeCode)
+                {
+                    Console.WriteLine(pet.Name + " (" + pet.Age.ToString() + ")");
+                }
+
+            }
         }
 
-        // Keeping count (an object must be responsible for itself)
-        public int Count
-        {
-            get { return _petNames.Count; }
-        }
 
-        // 1. Method to get pet info?
     }
 
     internal class Program
@@ -110,14 +115,8 @@ namespace WilmingtonVetClinic
             Console.WriteLine("Number of pets: " + pets);
             Console.WriteLine("Total Household Administrative Fee: {0}", currentAdminFee.ToString("C", CultureInfo.GetCultureInfo("en-US")) + "\n");
 
-            // Dictionary for pet codes
-            Dictionary<char, string> petCodes = new Dictionary<char, string>
-            {
-                {'B', "Bird"},
-                {'C', "Cat"},
-                {'D', "Dog"},
-                {'R', "Reptile"}
-            };
+            // List of objects to hold Pet objects //
+            List<Pet> listPets = new List<Pet>();
 
             // Prompt for pet names
             int p = 0;
@@ -125,11 +124,10 @@ namespace WilmingtonVetClinic
             {
                 Console.Write("Enter your pet's name: ");
                 string nameInput = Console.ReadLine();
-                // 2. need to use Pet class to add pet name
 
                 // Show pet codes
                 Console.WriteLine("The following pet type codes are available: ");
-                foreach(KeyValuePair<char, string> code in petCodes)
+                foreach (KeyValuePair<char, string> code in Pet.PetCodes)
                 {
                     Console.WriteLine("\t" + code.Key + "\t" + code.Value);
                 }
@@ -137,12 +135,19 @@ namespace WilmingtonVetClinic
                 // Prompt for pet code
                 Console.Write($"Enter {nameInput}'s pet type code: ");
                 char codeInput = Convert.ToChar(Console.ReadLine().ToUpper());
-                // 2. need to use Pet class to add pet code
 
                 // Prompt for pet age
                 Console.Write($"Enter {nameInput}'s age: ");
                 int ageInput = Convert.ToInt32(Console.ReadLine());
-                // 2. need to use Pet class to add pet age
+
+                // Instructor Note: Create new pet object //
+                Pet thisPet = new Pet();
+                thisPet.Name = nameInput;
+                thisPet.PetType = codeInput;
+                thisPet.Age = ageInput;
+
+                // Instructor Note: Add pet to pet list //
+                listPets.Add(thisPet);
 
                 // Insert break for readability
                 Console.WriteLine();
@@ -150,7 +155,7 @@ namespace WilmingtonVetClinic
                 // Increment counter
                 p++;
 
-                // if counter is greater than or equal to pets, break out of while loop
+                // If counter is greater than or equal to pets, break out of while loop
                 if (p >= int.Parse(pets))
                 {
                     break;
@@ -158,41 +163,25 @@ namespace WilmingtonVetClinic
 
             }
 
-            bool quit = false;
-            while(quit != true) 
+            while (true)
             {
-                // Prompt for pet code to display pets of that type
-                Console.WriteLine("Enter pet type to see listings, or 'Q' to Quit");
-                foreach(KeyValuePair<char, string> key in /*3. petCodes variable*/)
+                // Display pet type code legend
+                Console.WriteLine("The following pet type codes are available: ");
+                foreach (KeyValuePair<char, string> code in Pet.PetCodes)
                 {
-                    Console.WriteLine("\t" + key.Key + "\t" + key.Value);
+                    Console.WriteLine("\t" + code.Key + "\t" + code.Value);
                 }
 
-                char input = Convert.ToChar(Console.ReadLine().ToUpper());
+                // User enters desired pet type code or q for quit. Will be converted to upper case.
+                Console.Write($"Enter pet type code to see listing of names or 'Q' to Quit: ");
+                char codeToReview = Convert.ToChar(Console.ReadLine().ToUpper());
 
-                if(input == 'Q')
+                // Print the pets with the correct code
+                Pet.PrintNamesList(listPets, codeToReview);
+
+                if (codeToReview == 'Q')
                 {
                     break;
-                }
-                else if (input == 'B')
-                {
-                    Console.WriteLine("The following pets are of type Bird: ");
-                }
-                else if (input == 'C')
-                {
-                    Console.WriteLine("The following pets are of type Cat: ");
-                }
-                else if (input == 'D')
-                {
-                    Console.WriteLine("The following pets are of type Dog: ");
-                }
-                else if (input == 'R')
-                {
-                    Console.WriteLine("The following pets are of type Reptile: ");
-                }
-                else
-                {
-                    Console.WriteLine("That is not a valid response!");
                 }
             }
 
