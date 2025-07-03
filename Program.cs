@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -92,17 +93,24 @@ namespace WilmingtonVetClinic
             string location = String.Concat(town, ", ", state);
 
             // Prompt for pets
+            int pets;
             Console.Write("Enter the number of pets in your household: ");
-            string pets = Console.ReadLine();
+            
+            // Loop until a valid integer is entered
+            while (!Int32.TryParse(Console.ReadLine(), out pets))
+            {
+                Console.WriteLine("Invalid amount of pets entered. Please enter a whole number.");
+                Console.Write("Enter the number of pets in your household: ");
+            }
 
             // Administrative fees
             int adminFee = 25;
             int maxAdminFee = 100;
             int currentAdminFee = 0;
 
-            if (int.Parse(pets) <= 4)
+            if (pets <= 4)
             {
-                currentAdminFee = int.Parse(pets) * adminFee;
+                currentAdminFee = pets * adminFee;
             }
             else
             {
@@ -132,21 +140,42 @@ namespace WilmingtonVetClinic
                     Console.WriteLine("\t" + code.Key + "\t" + code.Value);
                 }
 
-                // Prompt for pet code
-                Console.Write($"Enter {nameInput}'s pet type code: ");
-                char codeInput = Convert.ToChar(Console.ReadLine().ToUpper());
+                // Prompt for pet code in try...catch
+                char codeInput = ' ';
+                try
+                {
+                    Console.Write($"Enter {nameInput}'s pet type code: ");
+                    
+                    // This will throw a FormatException if the input is not a single character
+                    codeInput = Convert.ToChar(Console.ReadLine().ToUpper());
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("\nInvalid pet code entered. A single character is required. The program will now exit.");
 
-                // Prompt for pet age
+                    // Exit the program
+                    Environment.Exit(-1);
+                }
+
+
+                // Prompt for pet age with input validation
+                int ageInput;
                 Console.Write($"Enter {nameInput}'s age: ");
-                int ageInput = Convert.ToInt32(Console.ReadLine());
 
-                // Instructor Note: Create new pet object //
+                // Loop until a valid integer is entered for the age of each pet
+                while (!Int32.TryParse(Console.ReadLine(), out ageInput))
+                {
+                    Console.WriteLine("Invalid pet age entered. Please enter a whole number for the pet's age.");
+                    Console.Write($"Enter {nameInput}'s age: ");
+                }
+
+                // Create new pet object //
                 Pet thisPet = new Pet();
                 thisPet.Name = nameInput;
                 thisPet.PetType = codeInput;
                 thisPet.Age = ageInput;
 
-                // Instructor Note: Add pet to pet list //
+                // Add pet to pet list //
                 listPets.Add(thisPet);
 
                 // Insert break for readability
@@ -156,7 +185,7 @@ namespace WilmingtonVetClinic
                 p++;
 
                 // If counter is greater than or equal to pets, break out of while loop
-                if (p >= int.Parse(pets))
+                if (p >= pets)
                 {
                     break;
                 }
@@ -172,17 +201,35 @@ namespace WilmingtonVetClinic
                     Console.WriteLine("\t" + code.Key + "\t" + code.Value);
                 }
 
-                // User enters desired pet type code or q for quit. Will be converted to upper case.
-                Console.Write($"Enter pet type code to see listing of names or 'Q' to Quit: ");
-                char codeToReview = Convert.ToChar(Console.ReadLine().ToUpper());
+                // Try...catch for user entering desired pet type code or q for quit. Will be converted to upper case.
+                char codeToReview = ' ';
+                try
+                {
+                    Console.Write($"Enter pet type code to see listing of names or 'Q' to Quit: ");
+                    
+                    // This will throw a FormatException if the input is not a single character
+                    codeToReview = Convert.ToChar(Console.ReadLine().ToUpper());
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("\nInvalid pet code entered. A single character is required. The program will now exit.");
 
-                // Print the pets with the correct code
-                Pet.PrintNamesList(listPets, codeToReview);
+                    // Exit the program
+                    Environment.Exit(-1);
+                }
 
                 if (codeToReview == 'Q')
                 {
                     break;
                 }
+
+                // Print the pets with the correct code
+                Console.WriteLine($"\nPets of type '{codeToReview}':");
+                Pet.PrintNamesList(listPets, codeToReview);
+                
+                // Add a blank line for readability
+                Console.WriteLine();
+
             }
 
             // Print terminate message
